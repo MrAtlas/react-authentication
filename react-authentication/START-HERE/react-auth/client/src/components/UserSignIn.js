@@ -1,13 +1,14 @@
 import { useContext, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import ThemeContext from '../context/ThemeContext';
 
+import ThemeContext from '../context/ThemeContext';
 import UserContext from '../context/UserContext';
 
 const UserSignIn = () => {
-  const { accentColor } = useContext(ThemeContext);
   const { actions } = useContext(UserContext);
+  const { accentColor } = useContext(ThemeContext);
   const navigate = useNavigate();
+
   // State
   const username = useRef(null);
   const password = useRef(null);
@@ -20,24 +21,24 @@ const UserSignIn = () => {
     const credentials = {
       username: username.current.value,
       password: password.current.value
-    }
+    };
 
     try {
       const user = await actions.signIn(credentials);
       if (user) {
-        navigate("/authenticated")
+        navigate("/authenticated");
       } else {
-        setErrors(["Sign in was unsuccessfull"])
+        setErrors(["Sign-in was unsuccessful"]);
       }
     } catch (error) {
       console.log(error);
-      navigate("/error")
+      navigate("/error");
     }
   }
 
   const handleCancel = (event) => {
     event.preventDefault();
-    navigate("/")
+    navigate("/");
   }
 
   return (
@@ -54,7 +55,7 @@ const UserSignIn = () => {
                 </ul>
               </div>
             </div>
-          ) : null}
+          ) : null }
           <form onSubmit={handleSubmit}>
             <input
               id="username"
