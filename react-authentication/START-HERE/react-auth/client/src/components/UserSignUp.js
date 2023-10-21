@@ -3,10 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import UserContext from '../context/UserContext';
 import ThemeContext from '../context/ThemeContext';
+import ErrorsDisplay from './ErrorsDisplay';
+import { apiHelper } from '../utils/apiHelper';
 
 const UserSignIn = () => {
   const { accentColor } = useContext(ThemeContext);
-  const {actions} = useContext(UserContext);
+  const { actions } = useContext(UserContext);
 
   const navigate = useNavigate()
   // State
@@ -25,16 +27,9 @@ const UserSignIn = () => {
       password: password.current.value
     }
 
-    const fetchOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8"
-      },
-      body: JSON.stringify(user),
-    }
 
     try {
-      const response = await fetch("http://localhost:5000/api/users", fetchOptions);
+      const response = await apiHelper("/users", "POST", user);
       if (response.status === 201) {
         await actions.signIn(user);
         navigate("/authenticated")
@@ -61,16 +56,7 @@ const UserSignIn = () => {
       <div className="grid-33 centered signin">
         <h1>Sign up</h1>
         <div>
-          {errors.length ? (
-            <div>
-              <h2 className="validation--errors--label">Validation errors</h2>
-              <div className="validation-errors">
-                <ul>
-                  {errors.map((error, i) => <li key={i}>{error}</li>)}
-                </ul>
-              </div>
-            </div>
-          ) : null}
+          <ErrorsDisplay errors={errors} />
           <form onSubmit={handleSubmit}>
             <input
               id="name"
