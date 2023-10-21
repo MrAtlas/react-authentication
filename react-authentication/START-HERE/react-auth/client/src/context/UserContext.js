@@ -1,9 +1,11 @@
 import { createContext, useState } from "react";
+import Cookies from "js-cookie";
 
 const UserContext = createContext(null);
 
 export const UserProvider = (props) => {
-  const [authUser, setAuthUser] = useState(null);
+  const cookie = Cookies.get("autheticatedUser");
+  const [authUser, setAuthUser] = useState(cookie ? JSON.parse(cookie) : null);
 
   const signIn = async (credentials) => {
     const encodedCredentials = btoa(`${credentials.username}:${credentials.password}`);
@@ -16,19 +18,21 @@ export const UserProvider = (props) => {
     };
 
     const response = await fetch("http://localhost:5000/api/users", fetchOptions);
-      if (response.status === 200) {
-        const user = await response.json();
-        setAuthUser(user);
-        return user
-      } else if (response.status === 401) {
-        return null
-      } else {
-        throw new Error();
-      }
+    if (response.status === 200) {
+      const user = await response.json();
+      setAuthUser(user);
+      Cookies.set("autheticatedUser", JSON.stringify(user), { expires: 1 });
+      return user
+    } else if (response.status === 401) {
+      return null
+    } else {
+      throw new Error();
+    }
   }
 
   const signOut = () => {
     setAuthUser(null);
+    Cookies.remove("autheticatedUser");
   }
 
   return (
