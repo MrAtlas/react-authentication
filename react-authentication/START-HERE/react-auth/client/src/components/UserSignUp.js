@@ -6,7 +6,7 @@ import ThemeContext from '../context/ThemeContext';
 import ErrorsDisplay from './ErrorsDisplay';
 import { apiHelper } from '../utils/apiHelper';
 
-const UserSignIn = () => {
+const UserSignUp = () => {
   const { accentColor } = useContext(ThemeContext);
   const { actions } = useContext(UserContext);
 
@@ -90,4 +90,4 @@ const UserSignIn = () => {
   );
 }
 
-export default UserSignIn;
+export default UserSignUp;
